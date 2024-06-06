@@ -1,5 +1,6 @@
-import SignupCard from './signup/Signup'
-import LoginCard from './login/Login'
+import SignupCard from './auth/signup/Signup'
+import LoginCard from './auth/login/Login'
+
 function App() {
   const user = true
   return (
