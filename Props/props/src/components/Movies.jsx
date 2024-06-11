@@ -14,7 +14,7 @@ const Movies = () => {
     const fetchData = async () => {
       try {
         const movies = []
-        for (let i = 100; i <= 108; i++) {
+        for (let i = 100; i <= 118; i++) {
           const response = await axios.get(
             `https://api.themoviedb.org/3/movie/${i.toString()}?api_key=f1dfe5bb78ba39601777848c99dd984e`
           )
