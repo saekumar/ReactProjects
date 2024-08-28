@@ -2,76 +2,131 @@ import React, { useState } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css' // Import the styles
 
-const DateRangePicker = ({ onSubmit }) => {
+const airPorts = [
+  { name: 'Delhi', code: 'DEL' },
+  { name: 'Mumbai', code: 'BOM' },
+  { name: 'Bangalore', code: 'BLR' },
+  { name: 'Hyderabad', code: 'HYD' },
+  { name: 'Chennai', code: 'MAA' },
+  { name: 'Kolkata', code: 'CCU' },
+  { name: 'Ahmedabad', code: 'AMD' },
+  { name: 'Pune', code: 'PNQ' },
+  { name: 'Jaipur', code: 'JAI' },
+  { name: 'Lucknow', code: 'LKO' },
+  { name: 'Kochi', code: 'COK' },
+  { name: 'Goa', code: 'GOI' },
+  { name: 'Patna', code: 'PAT' },
+  { name: 'Bhubaneswar', code: 'BBI' },
+  { name: 'Guwahati', code: 'GAU' },
+  { name: 'Indore', code: 'IDR' },
+  { name: 'Chandigarh', code: 'IXC' },
+  { name: 'Nagpur', code: 'NAG' },
+  { name: 'Vadodara', code: 'BDQ' },
+  { name: 'Varanasi', code: 'VNS' },
+  { name: 'Thiruvananthapuram', code: 'TRV' },
+  { name: 'Visakhapatnam', code: 'VTZ' },
+  { name: 'Ranchi', code: 'IXR' },
+  { name: 'Raipur', code: 'RPR' },
+  { name: 'Jodhpur', code: 'JDH' },
+  { name: 'Cochin', code: 'COK' },
+  { name: 'Amritsar', code: 'ATQ' },
+  { name: 'Bagdogra', code: 'IXB' },
+  { name: 'Dehradun', code: 'DED' },
+  { name: 'Dibrugarh', code: 'DIB' },
+]
+
+const DateRangePicker = ({ onDataSubmit }) => {
   const [startDate, setStartDate] = useState(null)
-  const [endDate, setEndDate] = useState(null)
-  const [startTime, setStartTime] = useState('')
-  const [endTime, setEndTime] = useState('')
+  const [origin, setOrigin] = useState('')
+  const [destination, setDestination] = useState('')
+  const [dropdownOriginOpen, setDropdownOriginOpen] = useState(false)
+  const [dropdownDestinationOpen, setDropdownDestinationOpen] = useState(false)
 
   const handleSubmit = (e) => {
-    e.preventDefault() // Prevent form submission
-    // Format dates and times as required
+    e.preventDefault()
     const pickUpDate = startDate ? startDate.toISOString().split('T')[0] : ''
-    const dropOffDate = endDate ? endDate.toISOString().split('T')[0] : ''
-    const pickUpTime = startTime || ''
-    const dropOffTime = endTime || ''
+    const formData = { origin, destination, pickUpDate }
 
-    onSubmit({
-      pickUpDate,
-      pickUpTime,
-      dropOffDate,
-      dropOffTime,
-    })
-    console.log(pickUpDate, pickUpTime, dropOffDate, dropOffTime)
-
-    // Reset fields after submission
-    setEndDate(null)
+    onDataSubmit(formData) // Send data to Home component
     setStartDate(null)
-    setStartTime('')
-    setEndTime('')
+    setOrigin('')
+    setDestination('')
   }
 
   return (
-    <div className="flex items-center justify-center">
-      <form
-        onSubmit={handleSubmit}
-        className="flex items-center justify-between"
-      >
+    <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setDropdownOriginOpen(!dropdownOriginOpen)}
+            className="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-left"
+          >
+            {origin || 'Select Origin'}
+          </button>
+          {dropdownOriginOpen && (
+            <div className="absolute z-10 mt-2 bg-white divide-y divide-gray-100 rounded-lg shadow w-full dark:bg-gray-700">
+              <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
+                {airPorts.map((airport) => (
+                  <li key={airport.code}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOrigin(airport.code)
+                        setDropdownOriginOpen(false)
+                      }}
+                      className="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      {airport.name} ({airport.code})
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setDropdownDestinationOpen(!dropdownDestinationOpen)}
+            className="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-left"
+          >
+            {destination || 'Select Destination'}
+          </button>
+          {dropdownDestinationOpen && (
+            <div className="absolute z-10 mt-2 bg-white divide-y divide-gray-100 rounded-lg shadow w-full dark:bg-gray-700">
+              <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
+                {airPorts.map((airport) => (
+                  <li key={airport.code}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDestination(airport.code)
+                        setDropdownDestinationOpen(false)
+                      }}
+                      className="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      {airport.name} ({airport.code})
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
         <DatePicker
           selected={startDate}
           onChange={(date) => setStartDate(date)}
           selectsStart
           startDate={startDate}
-          endDate={endDate}
-          className="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          className="border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholderText="Select date start"
-        />
-        <input
-          type="time"
-          value={startTime}
-          onChange={(e) => setStartTime(e.target.value)}
-          className="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/6 p-2.5"
-        />
-        <span className="mx-2 text-gray-500">to</span>
-        <DatePicker
-          selected={endDate}
-          onChange={(date) => setEndDate(date)}
-          selectsEnd
-          startDate={startDate}
-          endDate={endDate}
-          minDate={startDate}
-          className="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-          placeholderText="Select date end"
-        />
-        <input
-          type="time"
-          value={endTime}
-          onChange={(e) => setEndTime(e.target.value)}
-          className="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/6 p-2.5"
         />
         <button
           type="submit"
-          className="p-3 m-3 bg-blue-400 text-white rounded border-blue-700"
+          className="bg-blue-500 text-white p-2 rounded-lg w-full hover:bg-blue-600 transition duration-300"
         >
           Submit
         </button>

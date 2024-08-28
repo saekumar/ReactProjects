@@ -19,8 +19,10 @@ const Movie = () => {
         const movieRes = await axios.get(
           `https://api.themoviedb.org/3/movie/${id}?`
         )
+        console.log(movieRes)
         setMovieData(movieRes.data)
       } catch (error) {
+        console.log(error)
         setError(error)
       } finally {
         setLoading(false)
@@ -28,7 +30,7 @@ const Movie = () => {
     }
     fetchData()
   }, [id, dispatch])
-
+  console.log(movieData)
   const isFavorite = favorites.some((movie) => movie.id === parseInt(id))
   console.log(isFavorite)
 

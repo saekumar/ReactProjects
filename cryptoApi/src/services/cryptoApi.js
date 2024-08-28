@@ -4,37 +4,59 @@ const skyApiHeaders = {
   'x-rapidapi-key': '6435a5a709mshf5d257c985374a7p12dccejsne5e1945d44dc',
   'x-rapidapi-host': 'sky-scanner3.p.rapidapi.com',
 }
-const baseUrl = 'https://sky-scanner3.p.rapidapi.com'
 
-const createRequest = (url, params) => ({
-  url,
-  headers: skyApiHeaders,
-  params,
-})
+const baseUrl = 'https://sky-scanner3.p.rapidapi.com/'
+
+const createRequest = (url, params) => {
+  // Log the full URL for debugging
+  const urlWithParams = new URL(baseUrl + url)
+  Object.keys(params).forEach((key) =>
+    urlWithParams.searchParams.append(key, params[key])
+  )
+  console.log('Request URL:', urlWithParams.toString())
+
+  return {
+    url,
+    headers: skyApiHeaders,
+    params,
+  }
+}
 
 export const skyApi = createApi({
   reducerPath: 'skyApi',
   baseQuery: fetchBaseQuery({ baseUrl }),
   endpoints: (builder) => ({
-    searchCars: builder.query({
+    searchNearbyAirports: builder.query({
       query: ({
-        pickUpEntityId,
-        pickUpDate,
-        pickUpTime,
-        dropOffDate,
-        dropOffTime,
-        dropOffEntityId,
+        fromEntityId,
+        toEntityId = '',
+        departDate = '',
+        wholeMonthDepart = '',
+        market = 'US',
+        locale = 'en-US',
+        currency = 'USD',
+        stops = '',
+        children = 0,
+        infants = 0,
+        cabinClass = 'economy',
+        adults = 1,
       }) =>
-        createRequest('/cars/search', {
-          pickUpEntityId,
-          pickUpDate,
-          pickUpTime,
-          dropOffDate,
-          dropOffTime,
-          dropOffEntityId,
+        createRequest('flights/search-one-way', {
+          fromEntityId,
+          toEntityId,
+          departDate,
+          wholeMonthDepart,
+          market,
+          locale,
+          currency,
+          stops,
+          children,
+          infants,
+          cabinClass,
+          adults,
         }),
     }),
   }),
 })
 
-export const { useSearchCarsQuery } = skyApi
+export const { useSearchNearbyAirportsQuery } = skyApi

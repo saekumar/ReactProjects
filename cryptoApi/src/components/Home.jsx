@@ -1,40 +1,23 @@
 import React, { useState } from 'react'
 import DateRangePicker from './DatePicker'
 import Providers from './Providers'
-import { useNavigate } from 'react-router-dom'
 
 const Home = () => {
-  const [searchParams, setSearchParams] = useState({
-    pickUpEntityId: '95565058',
-    pickUpDate: '2024-06-11',
-    pickUpTime: '18:36',
-    dropOffDate: '2024-06-26',
-    dropOffTime: '18:39',
-  })
+  const [data, setData] = useState({})
 
-  const handleDateSubmit = ({
-    pickUpDate,
-    pickUpTime,
-    dropOffDate,
-    dropOffTime,
-  }) => {
-    setSearchParams({
-      pickUpEntityId: '95565058',
-      pickUpDate: pickUpDate,
-      pickUpTime: pickUpTime,
-      dropOffDate: dropOffDate,
-      dropOffTime: dropOffTime,
-    })
+  const handleDataFromDatePicker = (data) => {
+    setData(data)
   }
 
-  const navigate = useNavigate()
-  console.log(searchParams)
-
   return (
-    <>
-      <DateRangePicker onSubmit={handleDateSubmit} />
-      {searchParams && <Providers searchParams={searchParams} />}
-    </>
+    <div className="flex flex-col items-center justify-center min-h-screen w-full bg-gray-100 p-6">
+      <DateRangePicker onDataSubmit={handleDataFromDatePicker} />
+      {data.origin && data.destination && data.pickUpDate && (
+        <div className="w-full mt-8">
+          <Providers data={data} />
+        </div>
+      )}
+    </div>
   )
 }
 

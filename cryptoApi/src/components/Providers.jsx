@@ -1,89 +1,77 @@
 import React, { useEffect, useState } from 'react'
-import { useSearchCarsQuery } from '../services/cryptoApi' // Ensure the import path is correct
+import axios from 'axios'
+import ItinerariesCard from './ItinerariesCard'
 
-const Providers = ({ searchParams }) => {
-  // Local state to manage the API response
-  const [searchData, setSearchData] = useState(null)
+const Providers = ({ data }) => {
+  const [nearbyFlights, setNearByFlights] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // Destructure the search parameters for better readability
-  const {
-    pickUpEntityId,
-    pickUpDate,
-    pickUpTime,
-    dropOffDate,
-    dropOffTime,
-    dropOffEntityId = '95565058', // Assuming a default value for dropOffEntityId if not provided
-  } = searchParams
-
-  // Validate required parameters
-  if (
-    !pickUpEntityId ||
-    !pickUpDate ||
-    !pickUpTime ||
-    !dropOffDate ||
-    !dropOffTime
-  ) {
-    return <div>Error: Missing required search parameters.</div>
-  }
-
-  // Query for cars using the provided search parameters
-  const {
-    data,
-    isFetching,
-    error: queryError,
-  } = useSearchCarsQuery({
-    pickUpEntityId,
-    pickUpDate,
-    pickUpTime,
-    dropOffDate,
-    dropOffTime,
-    dropOffEntityId,
-  })
-
   useEffect(() => {
-    if (!isFetching && data) {
-      setSearchData(data)
-      setLoading(false)
-    }
-    if (queryError) {
-      setError(queryError)
-      setLoading(false)
-    }
-  }, [isFetching, data, queryError])
+    const fetchFlights = async () => {
+      const options = {
+        method: 'GET',
+        url: 'https://sky-scanner3.p.rapidapi.com/flights/search-one-way',
+        params: {
+          fromEntityId: data?.origin,
+          toEntityId: data?.destination,
+          departDate: data?.pickUpDate,
+          currency: 'INR',
+          stops: 'direct',
+          cabinClass: 'economy',
+        },
+        headers: {
+          'x-rapidapi-key':
+            'd93a05979emshf63520101c3ab77p10ad39jsndd2f32676b65',
+          'x-rapidapi-host': 'sky-scanner3.p.rapidapi.com',
+        },
+      }
 
-  // Handle loading state
-  if (loading) {
-    return <div>Loading...</div>
+      try {
+        const response = await axios.request(options)
+        if (response.status === 200) {
+          console.log(response?.data?.data)
+          setNearByFlights(response?.data?.data)
+        } else {
+          setError(`Unexpected response code: ${response.status}`)
+        }
+        setLoading(false)
+      } catch (error) {
+        alert(error.message)
+        setLoading(false)
+      }
+    }
+
+    fetchFlights()
+  }, [data])
+  console.log(nearbyFlights)
+
+  if (loading) return <div className="text-center mt-20">Loading...</div>
+  if (error) return <div className="text-center mt-20">Error: {error}</div>
+
+  if (
+    !nearbyFlights ||
+    !nearbyFlights.itineraries ||
+    nearbyFlights.itineraries.length === 0
+  ) {
+    return <div className="text-center mt-20">No flights available</div>
   }
 
-  // Handle error state
-  if (error) {
-    return <div>Error: {error.message}</div>
-  }
-
-  // Extract providers from searchData
-  const providers = searchData?.data?.providers
-  const responseData = searchData?.data
-  console.log(responseData)
-  // const carList = responseData?.carList
-  console.log(data?.carList)
-  console.log(providers)
+  const itineraries = nearbyFlights.itineraries
+  console.log(itineraries)
 
   return (
-    <div>
-      {providers ? (
-        Object.entries(providers).map(([key, provider]) => (
-          <div key={key}>
-            <h2>{provider.rating}</h2>
-            <p>{provider.provider_name}</p>
-            {/* Add more details to display as needed */}
-          </div>
-        ))
-      ) : (
-        <div>No providers available</div>
-      )}
+    <div className="flex flex-col items-center justify-center w-full mt-20">
+      <h2 className="text-2xl font-bold mb-4">Flight Details</h2>
+      <div className="flex flex-col items-center gap-6 overflow-auto max-h-[calc(100vh-200px)] p-4 w-full">
+        {itineraries.map((itinerary, index) => (
+          <ItinerariesCard
+            key={index}
+            imgUrl={nearbyFlights.destinationImageUrl}
+            itinerary={itinerary}
+          />
+        ))}
+      </div>
     </div>
   )
 }
