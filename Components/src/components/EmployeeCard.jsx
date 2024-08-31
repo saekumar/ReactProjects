@@ -54,7 +54,7 @@ const EmployeeCard = () => {
   }
 
   return (
-    <div className="container mx-auto p-6 bg-gray-100 min-h-screen ">
+    <div className="container mx-auto p-6 bg-gray-100 min-h-screen relative">
       <div className="flex flex-col lg:flex-row bg-white shadow-lg rounded-lg overflow-hidden w-3/7">
         <div className="lg:w-1/3 bg-blue-50 p-4 border-r border-gray-300">
           <h1 className="text-2xl font-semibold mb-4 text-blue-600">
@@ -102,7 +102,7 @@ const EmployeeCard = () => {
           </div>
           <div className="">
             <button
-              className=" mx-auto h-12 w-20 rounded p-4 text-center items-center flex justify-center text-white hover:bg-blue-700 bg-blue-500"
+              className="mx-auto h-12 w-20 rounded p-4 text-center items-center flex justify-center text-white hover:bg-blue-700 bg-blue-500"
               onClick={() => {
                 setEmpform(!empform)
               }}
@@ -111,52 +111,100 @@ const EmployeeCard = () => {
             </button>
           </div>
         </div>
-        {empform && (
-          <div className="">
-            <form action="" className="" onSubmit={handleEmpData}>
-              <input
-                type="text"
-                placeholder="name"
-                value={singleUserData.name}
-                onChange={(e) => {
-                  setSingleUserData({ ...singleUserData, name: e.target.value })
-                }}
-              />
-              <input
-                type="text"
-                placeholder="address"
-                val={singleUserData.address}
-                onChange={(e) => {
-                  setSingleUserData({
-                    ...singleUserData,
-                    address: e.target.value,
-                  })
-                }}
-              />
-              <input
-                type="text"
-                placeholder="MObile"
-                val={singleUserData.Mobile}
-                onChange={(e) => {
-                  setSingleUserData({
-                    ...singleUserData,
-                    Mobile: e.target.value,
-                  })
-                }}
-              />
-              <input
-                type="date"
-                placeholder="Date Of Birth"
-                val={singleUserData.DOB}
-                onChange={(e) => {
-                  setSingleUserData({ ...singleUserData, DOB: e.target.value })
-                }}
-              />
-              <button type="submit">Add</button>
+      </div>
+
+      {empform && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-md max-w-md w-full">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              Add Employee
+            </h2>
+            <form onSubmit={handleEmpData} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter name"
+                  value={singleUserData.name}
+                  onChange={(e) =>
+                    setSingleUserData({
+                      ...singleUserData,
+                      name: e.target.value,
+                    })
+                  }
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Address
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter address"
+                  value={singleUserData.address}
+                  onChange={(e) =>
+                    setSingleUserData({
+                      ...singleUserData,
+                      address: e.target.value,
+                    })
+                  }
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Mobile
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter mobile number"
+                  value={singleUserData.Mobile}
+                  onChange={(e) =>
+                    setSingleUserData({
+                      ...singleUserData,
+                      Mobile: e.target.value,
+                    })
+                  }
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Date of Birth
+                </label>
+                <input
+                  type="date"
+                  value={singleUserData.DOB}
+                  onChange={(e) =>
+                    setSingleUserData({
+                      ...singleUserData,
+                      DOB: e.target.value,
+                    })
+                  }
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-blue-500 text-white p-3 rounded-md shadow hover:bg-blue-600 transition duration-150 ease-in-out"
+              >
+                Add Employee
+              </button>
             </form>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }
